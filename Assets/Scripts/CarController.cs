@@ -6,7 +6,7 @@ using TMPro;
 public class CarController : MonoBehaviour
 {
     private Rigidbody rigidBody;
-    private float desired_acceleration;
+    private Vector2 desired_acceleration;
 
     [SerializeField]
     private float impulse;
@@ -25,14 +25,13 @@ public class CarController : MonoBehaviour
     void OnMove(InputValue action)
     {
         Vector2 movement = action.Get<Vector2>();
-        desired_acceleration = movement.y;
+        desired_acceleration = movement;
         
     }
 
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-        desired_acceleration = 0f;
         lap = 0;
         impulse = 15f;
         turnrate = 1f;
@@ -45,7 +44,8 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rigidBody.AddRelativeForce(Vector3.forward * desired_acceleration * impulse * Time.deltaTime*500);
+        rigidBody.AddRelativeForce(Vector3.forward * desired_acceleration.y * impulse * Time.deltaTime*500);
+        rigidBody.AddRelativeForce(Vector3.right * desired_acceleration.x * impulse * Time.deltaTime*500);
 
         float dx = (Mouse.current.position.x.value - Screen.width / 2) / 200 * turnrate;
         if (Mathf.Abs(dx) > 0.01f)
